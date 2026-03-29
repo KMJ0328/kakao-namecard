@@ -27,14 +27,14 @@ const templates = {
       <rect width="1024" height="600" fill="#FAFAFA"/>
       <rect width="6" height="600" fill="#2563EB"/>
 
-      <text x="70" y="180" font-family="Arial" font-size="56" font-weight="bold" fill="#111">${esc(d.name)}</text>
-      <text x="72" y="220" font-family="Arial" font-size="20" fill="#2563EB" letter-spacing="2">${esc(d.title)}</text>
+      <text x="70" y="180" font-family="Noto Sans KR, Arial, sans-serif" font-size="56" font-weight="bold" fill="#111">${esc(d.name)}</text>
+      <text x="72" y="220" font-family="Noto Sans KR, Arial, sans-serif" font-size="20" fill="#2563EB" letter-spacing="2">${esc(d.title)}</text>
 
       <line x1="72" y1="260" x2="220" y2="260" stroke="#DDD" stroke-width="1.5"/>
 
-      <text x="72" y="310" font-family="Arial" font-size="18" fill="#555">${esc(d.company)}</text>
-      <text x="72" y="420" font-family="Arial" font-size="16" fill="#888">${esc(d.phone)}</text>
-      <text x="72" y="452" font-family="Arial" font-size="16" fill="#888">${esc(d.email)}</text>
+      <text x="72" y="310" font-family="Noto Sans KR, Arial, sans-serif" font-size="18" fill="#555">${esc(d.company)}</text>
+      <text x="72" y="420" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#888">${esc(d.phone)}</text>
+      <text x="72" y="452" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#888">${esc(d.email)}</text>
 
       <circle cx="900" cy="300" r="160" fill="none" stroke="#2563EB" stroke-width="1" opacity="0.12"/>
       <circle cx="900" cy="300" r="100" fill="none" stroke="#2563EB" stroke-width="1" opacity="0.08"/>
@@ -57,22 +57,22 @@ const templates = {
 
       <!-- 회사 로고 이니셜 -->
       <circle cx="80" cy="90" r="40" fill="rgba(255,255,255,0.15)"/>
-      <text x="80" y="102" font-family="Arial" font-size="28" font-weight="bold" fill="#FFF" text-anchor="middle">${esc(initials(d.company))}</text>
+      <text x="80" y="102" font-family="Noto Sans KR, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFF" text-anchor="middle">${esc(initials(d.company))}</text>
 
-      <text x="140" y="82" font-family="Arial" font-size="28" font-weight="bold" fill="#FFF">${esc(d.company)}</text>
-      <text x="140" y="112" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.6)" letter-spacing="3">${esc(d.title)}</text>
+      <text x="140" y="82" font-family="Noto Sans KR, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFF">${esc(d.company)}</text>
+      <text x="140" y="112" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)" letter-spacing="3">${esc(d.title)}</text>
 
-      <text x="60" y="260" font-family="Arial" font-size="42" font-weight="bold" fill="#111">${esc(d.name)}</text>
+      <text x="60" y="260" font-family="Noto Sans KR, Arial, sans-serif" font-size="42" font-weight="bold" fill="#111">${esc(d.name)}</text>
       <rect x="60" y="280" width="60" height="3" fill="#0F3460"/>
 
       <!-- 연락처 아이콘 그리드 -->
       <rect x="60" y="340" width="28" height="28" rx="6" fill="#0F3460" opacity="0.1"/>
-      <text x="74" y="360" font-family="Arial" font-size="14" fill="#0F3460" text-anchor="middle">T</text>
-      <text x="100" y="360" font-family="Arial" font-size="17" fill="#444">${esc(d.phone)}</text>
+      <text x="74" y="360" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="#0F3460" text-anchor="middle">T</text>
+      <text x="100" y="360" font-family="Noto Sans KR, Arial, sans-serif" font-size="17" fill="#444">${esc(d.phone)}</text>
 
       <rect x="60" y="384" width="28" height="28" rx="6" fill="#0F3460" opacity="0.1"/>
-      <text x="74" y="404" font-family="Arial" font-size="14" fill="#0F3460" text-anchor="middle">E</text>
-      <text x="100" y="404" font-family="Arial" font-size="17" fill="#444">${esc(d.email)}</text>
+      <text x="74" y="404" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="#0F3460" text-anchor="middle">E</text>
+      <text x="100" y="404" font-family="Noto Sans KR, Arial, sans-serif" font-size="17" fill="#444">${esc(d.email)}</text>
 
       <!-- 우하단 장식 -->
       <rect x="900" y="500" width="80" height="80" rx="10" fill="#0F3460" opacity="0.06"/>
@@ -102,15 +102,15 @@ const templates = {
       <!-- 상단 라인 -->
       <rect x="60" y="60" width="50" height="3" fill="rgba(255,255,255,0.5)"/>
 
-      <text x="60" y="110" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.5)" letter-spacing="6">${esc(d.company)}</text>
+      <text x="60" y="110" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.5)" letter-spacing="6">${esc(d.company)}</text>
 
-      <text x="60" y="240" font-family="Arial" font-size="72" font-weight="bold" fill="#FFF">${esc(d.name)}</text>
-      <text x="64" y="280" font-family="Arial" font-size="22" fill="rgba(255,255,255,0.75)">${esc(d.title)}</text>
+      <text x="60" y="240" font-family="Noto Sans KR, Arial, sans-serif" font-size="72" font-weight="bold" fill="#FFF">${esc(d.name)}</text>
+      <text x="64" y="280" font-family="Noto Sans KR, Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.75)">${esc(d.title)}</text>
 
       <rect x="60" y="320" width="80" height="2" fill="rgba(255,255,255,0.4)"/>
 
-      <text x="60" y="410" font-family="Arial" font-size="18" fill="rgba(255,255,255,0.65)">${esc(d.phone)}</text>
-      <text x="60" y="445" font-family="Arial" font-size="18" fill="rgba(255,255,255,0.65)">${esc(d.email)}</text>
+      <text x="60" y="410" font-family="Noto Sans KR, Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.65)">${esc(d.phone)}</text>
+      <text x="60" y="445" font-family="Noto Sans KR, Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.65)">${esc(d.email)}</text>
     </svg>`;
   },
 
@@ -133,15 +133,15 @@ const templates = {
       <rect x="0" y="0" width="4" height="600" fill="#00F5FF"/>
       <rect x="0" y="0" width="4" height="600" fill="#00F5FF" opacity="0.3" filter="url(#glow)"/>
 
-      <text x="50" y="160" font-family="Arial" font-size="14" fill="#00F5FF" letter-spacing="8" opacity="0.7">${esc(d.company)}</text>
+      <text x="50" y="160" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="#00F5FF" letter-spacing="8" opacity="0.7">${esc(d.company)}</text>
 
-      <text x="50" y="270" font-family="Arial" font-size="58" font-weight="bold" fill="#FFFFFF">${esc(d.name)}</text>
-      <text x="52" y="310" font-family="Arial" font-size="20" fill="#00F5FF" opacity="0.8">${esc(d.title)}</text>
+      <text x="50" y="270" font-family="Noto Sans KR, Arial, sans-serif" font-size="58" font-weight="bold" fill="#FFFFFF">${esc(d.name)}</text>
+      <text x="52" y="310" font-family="Noto Sans KR, Arial, sans-serif" font-size="20" fill="#00F5FF" opacity="0.8">${esc(d.title)}</text>
 
       <line x1="50" y1="345" x2="250" y2="345" stroke="#00F5FF" stroke-width="1" opacity="0.3"/>
 
-      <text x="50" y="420" font-family="monospace" font-size="16" fill="#666680">${esc(d.phone)}</text>
-      <text x="50" y="455" font-family="monospace" font-size="16" fill="#666680">${esc(d.email)}</text>
+      <text x="50" y="420" font-family="Noto Sans KR, monospace" font-size="16" fill="#666680">${esc(d.phone)}</text>
+      <text x="50" y="455" font-family="Noto Sans KR, monospace" font-size="16" fill="#666680">${esc(d.email)}</text>
 
       <!-- 우하단 데코 -->
       <rect x="860" y="440" width="120" height="120" rx="4" fill="none" stroke="#00F5FF" stroke-width="0.5" opacity="0.15"/>
@@ -170,17 +170,17 @@ const templates = {
       <circle cx="900" cy="250" r="80" fill="rgba(255,255,255,0.06)"/>
 
       <!-- 우측 텍스트 -->
-      <text x="850" y="280" font-family="Arial" font-size="70" font-weight="bold" fill="#FFF" text-anchor="middle">${esc(initials(d.name))}</text>
-      <text x="850" y="340" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="4">${esc(d.company)}</text>
+      <text x="850" y="280" font-family="Noto Sans KR, Arial, sans-serif" font-size="70" font-weight="bold" fill="#FFF" text-anchor="middle">${esc(initials(d.name))}</text>
+      <text x="850" y="340" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="4">${esc(d.company)}</text>
 
       <!-- 좌측 -->
-      <text x="60" y="180" font-family="Arial" font-size="50" font-weight="bold" fill="#222">${esc(d.name)}</text>
-      <text x="62" y="218" font-family="Arial" font-size="20" fill="#FF6B35">${esc(d.title)}</text>
+      <text x="60" y="180" font-family="Noto Sans KR, Arial, sans-serif" font-size="50" font-weight="bold" fill="#222">${esc(d.name)}</text>
+      <text x="62" y="218" font-family="Noto Sans KR, Arial, sans-serif" font-size="20" fill="#FF6B35">${esc(d.title)}</text>
 
       <rect x="62" y="250" width="40" height="3" fill="#FF6B35" opacity="0.5"/>
 
-      <text x="62" y="360" font-family="Arial" font-size="16" fill="#777">${esc(d.phone)}</text>
-      <text x="62" y="392" font-family="Arial" font-size="16" fill="#777">${esc(d.email)}</text>
+      <text x="62" y="360" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#777">${esc(d.phone)}</text>
+      <text x="62" y="392" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#777">${esc(d.email)}</text>
     </svg>`;
   },
 
@@ -193,17 +193,17 @@ const templates = {
       <rect width="1024" height="600" fill="#000" opacity="0.02"/>
 
       <!-- 대형 이니셜 배경 -->
-      <text x="750" y="450" font-family="Arial" font-size="400" font-weight="bold" fill="#000" opacity="0.03">${esc(initials(d.name))}</text>
+      <text x="750" y="450" font-family="Noto Sans KR, Arial, sans-serif" font-size="400" font-weight="bold" fill="#000" opacity="0.03">${esc(initials(d.name))}</text>
 
-      <text x="80" y="200" font-family="Arial" font-size="16" fill="#999" letter-spacing="8">${esc(d.company)}</text>
+      <text x="80" y="200" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#999" letter-spacing="8">${esc(d.company)}</text>
       <rect x="80" y="220" width="1024" height="1" fill="#EEE"/>
 
-      <text x="80" y="310" font-family="Arial" font-size="60" font-weight="bold" fill="#000">${esc(d.name)}</text>
-      <text x="82" y="350" font-family="Arial" font-size="20" fill="#666">${esc(d.title)}</text>
+      <text x="80" y="310" font-family="Noto Sans KR, Arial, sans-serif" font-size="60" font-weight="bold" fill="#000">${esc(d.name)}</text>
+      <text x="82" y="350" font-family="Noto Sans KR, Arial, sans-serif" font-size="20" fill="#666">${esc(d.title)}</text>
 
       <rect x="80" y="420" width="30" height="2" fill="#000"/>
 
-      <text x="80" y="470" font-family="Arial" font-size="15" fill="#999">${esc(d.phone)}  |  ${esc(d.email)}</text>
+      <text x="80" y="470" font-family="Noto Sans KR, Arial, sans-serif" font-size="15" fill="#999">${esc(d.phone)}  |  ${esc(d.email)}</text>
     </svg>`;
   },
 
@@ -229,16 +229,16 @@ const templates = {
       <circle cx="960" cy="40" r="25" fill="#43B692" opacity="0.06"/>
       <circle cx="880" cy="30" r="15" fill="#43B692" opacity="0.05"/>
 
-      <text x="60" y="140" font-family="Arial" font-size="48" font-weight="bold" fill="#1A5E3A">${esc(d.name)}</text>
-      <text x="62" y="175" font-family="Arial" font-size="18" fill="#43B692">${esc(d.title)}  ·  ${esc(d.company)}</text>
+      <text x="60" y="140" font-family="Noto Sans KR, Arial, sans-serif" font-size="48" font-weight="bold" fill="#1A5E3A">${esc(d.name)}</text>
+      <text x="62" y="175" font-family="Noto Sans KR, Arial, sans-serif" font-size="18" fill="#43B692">${esc(d.title)}  ·  ${esc(d.company)}</text>
 
       <rect x="62" y="200" width="50" height="2" fill="#43B692" opacity="0.4"/>
 
-      <text x="62" y="280" font-family="Arial" font-size="16" fill="#5A8A72">${esc(d.phone)}</text>
-      <text x="62" y="310" font-family="Arial" font-size="16" fill="#5A8A72">${esc(d.email)}</text>
+      <text x="62" y="280" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#5A8A72">${esc(d.phone)}</text>
+      <text x="62" y="310" font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#5A8A72">${esc(d.email)}</text>
 
       <!-- 하단 웨이브 위 이름 -->
-      <text x="80" y="530" font-family="Arial" font-size="22" font-weight="bold" fill="#FFF" opacity="0.9">${esc(d.company)}</text>
+      <text x="80" y="530" font-family="Noto Sans KR, Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFF" opacity="0.9">${esc(d.company)}</text>
     </svg>`;
   },
 
@@ -272,15 +272,15 @@ const templates = {
       <rect x="974" y="578" width="30" height="2" fill="url(#gold)"/>
       <rect x="1002" y="550" width="2" height="30" fill="url(#gold)"/>
 
-      <text x="512" y="180" font-family="Arial" font-size="14" fill="url(#gold)" text-anchor="middle" letter-spacing="10" opacity="0.7">${esc(d.company)}</text>
+      <text x="512" y="180" font-family="Noto Sans KR, Arial, sans-serif" font-size="14" fill="url(#gold)" text-anchor="middle" letter-spacing="10" opacity="0.7">${esc(d.company)}</text>
 
-      <text x="512" y="290" font-family="Georgia,serif" font-size="64" font-weight="bold" fill="url(#gold)" text-anchor="middle">${esc(d.name)}</text>
+      <text x="512" y="290" font-family="Noto Sans KR, Georgia, serif" font-size="64" font-weight="bold" fill="url(#gold)" text-anchor="middle">${esc(d.name)}</text>
 
       <line x1="400" y1="320" x2="624" y2="320" stroke="url(#gold)" stroke-width="0.8" opacity="0.5"/>
 
-      <text x="512" y="360" font-family="Arial" font-size="18" fill="#888" text-anchor="middle" letter-spacing="4">${esc(d.title)}</text>
+      <text x="512" y="360" font-family="Noto Sans KR, Arial, sans-serif" font-size="18" fill="#888" text-anchor="middle" letter-spacing="4">${esc(d.title)}</text>
 
-      <text x="512" y="460" font-family="Arial" font-size="15" fill="#666" text-anchor="middle">${esc(d.phone)}  ·  ${esc(d.email)}</text>
+      <text x="512" y="460" font-family="Noto Sans KR, Arial, sans-serif" font-size="15" fill="#666" text-anchor="middle">${esc(d.phone)}  ·  ${esc(d.email)}</text>
     </svg>`;
   },
 };

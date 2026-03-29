@@ -1,6 +1,10 @@
 // ═══════════════════════════════════════════════════
 // 카카오톡 챗봇 명함 서비스 — 스킬 서버
 // ═══════════════════════════════════════════════════
+// 한글 폰트 fontconfig 설정
+process.env.FONTCONFIG_FILE = process.env.FONTCONFIG_FILE || require('path').join(__dirname, 'fonts', 'fonts.conf');
+process.env.PANGOCAIRO_BACKEND = 'fontconfig';
+
 const express = require('express');
 const path = require('path');
 const { generateCard, templates } = require('./generator');
