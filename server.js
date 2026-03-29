@@ -103,8 +103,7 @@ app.post('/skill/input', async (req, res) => {
     // 템플릿 선택 처리
     if (session.step === 'template' && TEMPLATE_MAP[utterance]) {
       const templateName = TEMPLATE_MAP[utterance];
-      const { filename } = await generateCard(session.data, templateName);
-      const imageUrl = `${BASE_URL}/cards/${filename}`;
+      const { dataUrl } = await generateCard(session.data, templateName);
       session.step = 'done';
 
       return res.json({
@@ -114,9 +113,8 @@ app.post('/skill/input', async (req, res) => {
             basicCard: {
               title: `${session.data.name}의 명함 — ${utterance}`,
               description: `${session.data.company} | ${session.data.title}`,
-              thumbnail: { imageUrl },
+              thumbnail: { imageUrl: dataUrl },
               buttons: [
-                { label: '이미지 저장', action: 'webLink', webLinkUrl: imageUrl },
                 { label: '다른 디자인', action: 'message', messageText: '디자인 변경' },
                 { label: '새로 만들기', action: 'message', messageText: '다시 만들기' },
               ],

@@ -289,13 +289,17 @@ async function generateCard(data, templateName = 'minimal') {
   const tmpl = templates[templateName] || templates.minimal;
   const svg = tmpl(data);
 
+  const pngBuffer = await sharp(Buffer.from(svg)).png().toBuffer();
+  const base64 = pngBuffer.toString('base64');
+  const dataUrl = `data:image/png;base64,${base64}`;
+
+  // 파일도 저장 (로컬 테스트용)
   const filename = `card_${templateName}_${Date.now()}.png`;
   const filepath = path.join(OUTPUT_DIR, filename);
+  await sharp(pngBuffer).toFile(filepath).catch(() => {});
 
-  await sharp(Buffer.from(svg)).png().toFile(filepath);
-
-  console.log(`[Generator] ${templateName} 명함 생성: ${filename}`);
-  return { filepath, filename };
+  console.log(`[Generator] ${templateName} 명함 생성`);
+  return { filepath, filename, dataUrl };
 }
 
 module.exports = { generateCard, templates: Object.keys(templates) };
