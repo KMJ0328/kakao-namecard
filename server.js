@@ -15,6 +15,9 @@ app.use('/cards', express.static(path.join(__dirname, 'output')));
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
 
+// 이미지 메모리 캐시 (id → pngBuffer)
+const imageCache = new Map();
+
 // ═══ 카카오 스킬 응답 헬퍼 ═══
 function simpleText(text) {
   return { version: '2.0', template: { outputs: [{ simpleText: { text } }] } };
@@ -107,7 +110,9 @@ app.post('/skill/input', async (req, res) => {
     // 템플릿 선택 처리
     if (session.step === 'template' && TEMPLATE_MAP[utterance]) {
       const templateName = TEMPLATE_MAP[utterance];
-      const { dataUrl } = await generateCard(session.data, templateName);
+      const { dataUrl, pngBuffer } = await generateCard(session.data, templateName);
+      const imgId = `img_${Date.now()}`;
+      imageCache.set(imgId, pngBuffer);
       session.step = 'done';
 
       return res.json({
@@ -119,6 +124,7 @@ app.post('/skill/input', async (req, res) => {
               description: `${session.data.company} | ${session.data.title}`,
               thumbnail: { imageUrl: dataUrl },
               buttons: [
+                { label: '이미지 저장', action: 'webLink', webLinkUrl: `${BASE_URL}/download/${imgId}` },
                 { label: '다른 디자인', action: 'message', messageText: '디자인 변경' },
                 { label: '새로 만들기', action: 'message', messageText: '다시 만들기' },
               ],
@@ -163,6 +169,14 @@ app.post('/skill/help', (req, res) => {
     '4. "다른 디자인"으로 같은 정보로 다른 템플릿 적용\n\n' +
     '무료로 무제한 생성 가능합니다.'
   ));
+});
+
+// ═══ 이미지 다운로드 ═══
+app.get('/download/:id', (req, res) => {
+  const buf = imageCache.get(req.params.id);
+  if (!buf) return res.status(404).send('이미지가 만료되었습니다. 다시 생성해주세요.');
+  res.set({ 'Content-Type': 'image/png', 'Content-Disposition': 'attachment; filename="namecard.png"' });
+  res.send(buf);
 });
 
 // ═══ 테스트 UI ═══
@@ -252,7 +266,12 @@ app.get('/', (req, res) => {
         const img = document.createElement('img');
         img.src = imageUrl;
         img.className = 'card-img';
-        img.onclick = () => window.open(imageUrl, '_blank');
+        img.onclick = () => {
+          const a = document.createElement('a');
+          a.href = imageUrl;
+          a.download = 'namecard.png';
+          a.click();
+        };
         div.appendChild(img);
       }
       document.getElementById('msgs').appendChild(div);

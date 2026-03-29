@@ -299,7 +299,7 @@ async function generateCard(data, templateName = 'minimal') {
   await sharp(pngBuffer).toFile(filepath).catch(() => {});
 
   console.log(`[Generator] ${templateName} 명함 생성`);
-  return { filepath, filename, dataUrl };
+  return { filepath, filename, dataUrl, pngBuffer };
 }
 
 module.exports = { generateCard, templates: Object.keys(templates) };
