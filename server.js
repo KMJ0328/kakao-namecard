@@ -363,15 +363,23 @@ app.get('/', (req, res) => {
 </html>`);
 });
 
+// ═══ 헬스체크 ═══
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`\n  명함 챗봇 서버: http://localhost:${PORT}`);
   console.log(`  카카오 스킬 URL: http://localhost:${PORT}/skill/input\n`);
 
-  // Render 무료 플랜 슬립 방지 — 10분마다 self-ping
+  // Render 무료 플랜 슬립 방지 — 13분마다 self-ping
   if (process.env.BASE_URL) {
-    setInterval(() => {
-      fetch(process.env.BASE_URL).catch(() => {});
-    }, 10 * 60 * 1000);
+    const ping = () => fetch(`${process.env.BASE_URL}/health`).catch(() => {});
+    ping(); // 시작 시 1회
+    setInterval(ping, 13 * 60 * 1000);
+    console.log('  keep-alive ping 활성화됨\n');
+  } else {
+    console.log('  ⚠ BASE_URL 미설정 — keep-alive 비활성\n');
   }
 });
