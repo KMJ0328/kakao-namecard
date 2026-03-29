@@ -35,13 +35,17 @@ function quickReplies(text, replies) {
 
 const TEMPLATE_REPLIES = [
   { label: '미니멀', message: '미니멀' },
+  { label: '다크', message: '다크' },
+  { label: '럭셔리', message: '럭셔리' },
+  { label: '더보기', message: '더보기' },
+];
+
+const TEMPLATE_REPLIES2 = [
   { label: '코퍼레이트', message: '코퍼레이트' },
   { label: '크리에이티브', message: '크리에이티브' },
-  { label: '다크', message: '다크' },
   { label: '선셋', message: '선셋' },
   { label: '모노', message: '모노' },
   { label: '네이처', message: '네이처' },
-  { label: '럭셔리', message: '럭셔리' },
 ];
 
 const TEMPLATE_MAP = {
@@ -97,6 +101,12 @@ app.post('/skill/input', async (req, res) => {
       }
     }
 
+    // "더보기" — 나머지 템플릿 표시
+    if (utterance === '더보기') {
+      session.step = 'template';
+      return res.json(quickReplies('디자인을 선택해주세요.', TEMPLATE_REPLIES2));
+    }
+
     // "명함 만들기" or "다시 만들기" 처리
     if (utterance === '명함 만들기' || utterance === '다시 만들기') {
       sessions.set(userId, { step: 'input', data: {} });
@@ -141,17 +151,14 @@ app.post('/skill/input', async (req, res) => {
       session.data = parsed;
       session.step = 'template';
       return res.json(quickReplies(
-        `입력 완료!\n\n${parsed.name} | ${parsed.title}\n${parsed.company}\n${parsed.phone} | ${parsed.email}\n\n디자인을 선택해주세요.`,
+        `${parsed.name} | ${parsed.title}\n디자인을 선택해주세요.`,
         TEMPLATE_REPLIES
       ));
     }
 
     // 형식이 안 맞으면 안내
     return res.json(simpleText(
-      '입력 형식을 확인해주세요.\n\n' +
-      '이름 / 직함 / 회사 / 연락처 / 이메일\n\n' +
-      '슬래시(/)로 구분해서 한 줄에 입력해주세요.\n' +
-      '예) 홍길동 / CEO / 스타트업 / 010-0000-0000 / hong@mail.com'
+      '이름/직함/회사/연락처/이메일\n예) 홍길동/CEO/회사/010-0000-0000/a@b.com'
     ));
 
   } catch (err) {
