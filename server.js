@@ -110,10 +110,11 @@ app.post('/skill/input', async (req, res) => {
     // 템플릿 선택 처리
     if (session.step === 'template' && TEMPLATE_MAP[utterance]) {
       const templateName = TEMPLATE_MAP[utterance];
-      const { dataUrl, pngBuffer } = await generateCard(session.data, templateName);
+      const { pngBuffer } = await generateCard(session.data, templateName);
       const imgId = `img_${Date.now()}`;
       imageCache.set(imgId, pngBuffer);
       session.step = 'done';
+      const imgUrl = `${BASE_URL}/image/${imgId}`;
 
       return res.json({
         version: '2.0',
@@ -122,7 +123,7 @@ app.post('/skill/input', async (req, res) => {
             basicCard: {
               title: `${session.data.name}의 명함 — ${utterance}`,
               description: `${session.data.company} | ${session.data.title}`,
-              thumbnail: { imageUrl: dataUrl },
+              thumbnail: { imageUrl: imgUrl },
               buttons: [
                 { label: '이미지 저장', action: 'webLink', webLinkUrl: `${BASE_URL}/download/${imgId}` },
                 { label: '다른 디자인', action: 'message', messageText: '디자인 변경' },
@@ -169,6 +170,14 @@ app.post('/skill/help', (req, res) => {
     '4. "다른 디자인"으로 같은 정보로 다른 템플릿 적용\n\n' +
     '무료로 무제한 생성 가능합니다.'
   ));
+});
+
+// ═══ 이미지 보기 (썸네일용) ═══
+app.get('/image/:id', (req, res) => {
+  const buf = imageCache.get(req.params.id);
+  if (!buf) return res.status(404).send('이미지가 만료되었습니다.');
+  res.set({ 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=3600' });
+  res.send(buf);
 });
 
 // ═══ 이미지 다운로드 ═══
