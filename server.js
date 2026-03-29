@@ -351,4 +351,11 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`\n  명함 챗봇 서버: http://localhost:${PORT}`);
   console.log(`  카카오 스킬 URL: http://localhost:${PORT}/skill/input\n`);
+
+  // Render 무료 플랜 슬립 방지 — 10분마다 self-ping
+  if (process.env.BASE_URL) {
+    setInterval(() => {
+      fetch(process.env.BASE_URL).catch(() => {});
+    }, 10 * 60 * 1000);
+  }
 });
