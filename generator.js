@@ -347,16 +347,16 @@ const QR_POSITIONS = {
   luxury:     { x: 810, y: 380, size: 160 },
 };
 
-// QR코드 색상 (템플릿별 — 배경에 맞춰)
+// QR코드 색상 — 흰 배경 위에 그려지므로 항상 진한 색
 const QR_COLORS = {
-  minimal: null,     // mainColor 사용
-  corporate: null,
-  creative: '#FFFFFF',
-  dark: null,        // mainColor 사용
-  sunset: '#555555',
-  mono: null,
-  nature: '#3A7A5A',
-  luxury: '#BF953F',
+  minimal:    '#222222',
+  corporate:  '#222222',
+  creative:   '#222222',
+  dark:       '#222222',
+  sunset:     '#222222',
+  mono:       '#222222',
+  nature:     '#222222',
+  luxury:     '#222222',
 };
 
 async function generateCard(data, templateName = 'minimal') {
