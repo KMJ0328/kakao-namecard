@@ -24,16 +24,19 @@ async function generateQrSvg(url, x, y, size, darkColor = '#000000') {
   try {
     const svgStr = await QRCode.toString(url, {
       type: 'svg',
-      width: size,
+      width: size - 16,
       margin: 1,
-      color: { dark: darkColor, light: '#00000000' },
+      color: { dark: darkColor, light: '#FFFFFF' },
     });
-    // SVG 내부 컨텐츠만 추출해서 위치 지정
     const inner = svgStr
       .replace(/<\?xml[^?]*\?>/, '')
       .replace(/<svg[^>]*>/, '')
       .replace(/<\/svg>/, '');
-    return `<g transform="translate(${x},${y})">${inner}</g>`;
+    // 흰색 배경 + 둥근 모서리 패딩으로 어떤 배경에서도 스캔 가능
+    return `<g transform="translate(${x},${y})">
+      <rect x="-8" y="-8" width="${size}" height="${size}" rx="8" fill="#FFFFFF"/>
+      ${inner}
+    </g>`;
   } catch {
     return '';
   }
