@@ -22,20 +22,15 @@ function initials(name) {
 async function generateQrSvg(url, x, y, size, darkColor = '#000000') {
   if (!url) return '';
   try {
-    const svgStr = await QRCode.toString(url, {
-      type: 'svg',
-      width: size - 16,
+    const dataUrl = await QRCode.toDataURL(url, {
+      width: size - 20,
       margin: 1,
       color: { dark: darkColor, light: '#FFFFFF' },
     });
-    const inner = svgStr
-      .replace(/<\?xml[^?]*\?>/, '')
-      .replace(/<svg[^>]*>/, '')
-      .replace(/<\/svg>/, '');
-    // 흰색 배경 + 둥근 모서리 패딩으로 어떤 배경에서도 스캔 가능
-    return `<g transform="translate(${x},${y})">
-      <rect x="-8" y="-8" width="${size}" height="${size}" rx="8" fill="#FFFFFF"/>
-      ${inner}
+    const pad = 10;
+    return `<g>
+      <rect x="${x - pad}" y="${y - pad}" width="${size}" height="${size}" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+      <image x="${x}" y="${y}" width="${size - pad * 2}" height="${size - pad * 2}" href="${dataUrl}"/>
     </g>`;
   } catch {
     return '';
