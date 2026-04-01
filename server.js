@@ -189,8 +189,9 @@ app.post('/skill/input', async (req, res) => {
     if (utterance === '업종더보기2') {
       return res.json(quickReplies('업종을 선택해주세요.', INDUSTRY_REPLIES_3));
     }
-    if (utterance.startsWith('업종:') && session.step === 'industry') {
-      const industry = utterance.replace('업종:', '');
+    if (session.step === 'industry') {
+      // 퀵리플라이 선택 (업종:XX) 또는 직접 텍스트 입력 모두 처리
+      let industry = utterance.startsWith('업종:') ? utterance.replace('업종:', '') : utterance;
       if (industry !== '건너뛰기') {
         session.data.industry = industry;
       }
@@ -312,7 +313,7 @@ app.post('/skill/input', async (req, res) => {
       session.data = { ...session.data, ...parsed };
       session.step = 'industry';
       return res.json(quickReplies(
-        `${parsed.name} | ${parsed.title} | ${parsed.company}\n\n업종을 선택해주세요.\n업종에 맞는 디자인을 추천해드립니다.`,
+        `${parsed.name} | ${parsed.title} | ${parsed.company}\n\n업종을 선택하거나 직접 입력해주세요.\n업종에 맞는 디자인을 추천해드립니다.`,
         INDUSTRY_REPLIES_1
       ));
     }
