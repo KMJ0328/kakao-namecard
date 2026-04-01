@@ -342,14 +342,14 @@ const templates = {
 
 // QR코드 위치 (템플릿별)
 const QR_POSITIONS = {
-  minimal:    { x: 850, y: 440, size: 120 },
-  corporate:  { x: 860, y: 420, size: 120 },
-  creative:   { x: 860, y: 440, size: 120 },
-  dark:       { x: 870, y: 450, size: 110 },
-  sunset:     { x: 500, y: 440, size: 120 },
-  mono:       { x: 860, y: 400, size: 130 },
-  nature:     { x: 850, y: 200, size: 120 },
-  luxury:     { x: 850, y: 420, size: 110 },
+  minimal:    { x: 810, y: 400, size: 170 },
+  corporate:  { x: 810, y: 380, size: 170 },
+  creative:   { x: 810, y: 400, size: 170 },
+  dark:       { x: 810, y: 400, size: 160 },
+  sunset:     { x: 460, y: 400, size: 170 },
+  mono:       { x: 810, y: 370, size: 180 },
+  nature:     { x: 810, y: 170, size: 170 },
+  luxury:     { x: 810, y: 380, size: 160 },
 };
 
 // QR코드 색상 (템플릿별 — 배경에 맞춰)
