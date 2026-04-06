@@ -113,6 +113,8 @@ function parseInput(text) {
       company: parts[2],
       phone: parts[3],
       email: parts[4] || '',
+      website: parts[5] || '',
+      address: parts[6] || '',
     };
   }
   return null;
@@ -165,8 +167,8 @@ app.post('/skill/start', (req, res) => {
   res.json(simpleText(
     '안녕하세요! 나만의 명함을 만들어 드릴게요.\n\n' +
     '아래 형식으로 한 번에 입력해주세요:\n\n' +
-    '이름 / 직함 / 회사 / 연락처 / 이메일\n\n' +
-    '예) 김민재 / 디렉터 / Nexus Studio / 010-1234-5678 / minjae@nexus.kr'
+    '이름/직함/회사/연락처/이메일/웹사이트/주소\n\n' +
+    '예) 김민재/디렉터/Nexus/010-1234-5678/a@b.com/nexus.kr/서울시 강남구'
   ));
 });
 
