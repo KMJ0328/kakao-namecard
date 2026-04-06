@@ -289,33 +289,40 @@ app.post('/skill/input', async (req, res) => {
     // ─── 템플릿 선택 → 명함 생성 ───
     if (session.step === 'template' && TEMPLATE_MAP[utterance]) {
       const templateName = TEMPLATE_MAP[utterance];
-      const { pngBuffer } = await generateCard(session.data, templateName);
-      const imgId = `img_${Date.now()}`;
-      imageCache.set(imgId, pngBuffer);
+      const { frontBuffer, backBuffer } = await generateCard(session.data, templateName);
+      const frontId = `front_${Date.now()}`;
+      const backId = `back_${Date.now()}`;
+      imageCache.set(frontId, frontBuffer);
+      imageCache.set(backId, backBuffer);
       session.step = 'done';
-      const imgUrl = `${BASE_URL}/image/${imgId}`;
-
-      const desc = [
-        `${session.data.company} | ${session.data.title}`,
-        session.data.industry ? `업종: ${session.data.industry}` : '',
-        session.data.qrUrl ? 'QR코드 포함' : '',
-      ].filter(Boolean).join('\n');
 
       return res.json({
         version: '2.0',
         template: {
-          outputs: [{
-            basicCard: {
-              title: `${session.data.name}의 명함 — ${utterance}`,
-              description: desc,
-              thumbnail: { imageUrl: imgUrl },
-              buttons: [
-                { label: '이미지 저장', action: 'webLink', webLinkUrl: `${BASE_URL}/download/${imgId}` },
-                { label: '다른 디자인', action: 'message', messageText: '디자인 변경' },
-                { label: '새로 만들기', action: 'message', messageText: '다시 만들기' },
-              ],
+          outputs: [
+            {
+              basicCard: {
+                title: `${session.data.name} — ${utterance} (앞면)`,
+                description: `${session.data.company}`,
+                thumbnail: { imageUrl: `${BASE_URL}/image/${frontId}` },
+                buttons: [
+                  { label: '앞면 저장', action: 'webLink', webLinkUrl: `${BASE_URL}/download/${frontId}` },
+                ],
+              },
             },
-          }],
+            {
+              basicCard: {
+                title: `${session.data.name} — ${utterance} (뒷면)`,
+                description: `${session.data.title} | ${session.data.phone}`,
+                thumbnail: { imageUrl: `${BASE_URL}/image/${backId}` },
+                buttons: [
+                  { label: '뒷면 저장', action: 'webLink', webLinkUrl: `${BASE_URL}/download/${backId}` },
+                  { label: '다른 디자인', action: 'message', messageText: '디자인 변경' },
+                  { label: '새로 만들기', action: 'message', messageText: '다시 만들기' },
+                ],
+              },
+            },
+          ],
         },
       });
     }

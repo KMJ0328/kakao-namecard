@@ -6,7 +6,6 @@ const sharp = require('sharp');
 const path = require('path');
 const QRCode = require('qrcode');
 
-const OUTPUT_DIR = path.join(__dirname, 'output');
 const TMPL_DIR = path.join(__dirname, 'templates');
 
 function esc(s) {
@@ -126,23 +125,9 @@ async function generateCard(data, templateName = 'simple') {
     .png()
     .toBuffer();
 
-  // 앞뒤 합치기
-  const combined = await sharp({
-    create: { width: 1044, height: 1200, channels: 4, background: { r: 240, g: 240, b: 240, alpha: 1 } }
-  })
-    .composite([
-      { input: frontBuffer, top: 5, left: 0 },
-      { input: backBuffer, top: 605, left: 0 },
-    ])
-    .png()
-    .toBuffer();
-
-  const filename = `card_${templateName}_${Date.now()}.png`;
-  const filepath = path.join(OUTPUT_DIR, filename);
-  await sharp(combined).toFile(filepath).catch(() => {});
-
+  const ts = Date.now();
   console.log(`[Generator] ${tmpl.name} 명함 생성`);
-  return { filepath, filename, pngBuffer: combined };
+  return { frontBuffer, backBuffer, ts };
 }
 
 module.exports = { generateCard, TEMPLATES };
