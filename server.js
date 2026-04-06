@@ -1,13 +1,12 @@
 // ═══════════════════════════════════════════════════
 // 카카오톡 챗봇 명함 서비스 — 스킬 서버
 // ═══════════════════════════════════════════════════
-// 한글 폰트 fontconfig 설정
 process.env.FONTCONFIG_FILE = process.env.FONTCONFIG_FILE || require('path').join(__dirname, 'fonts', 'fonts.conf');
 process.env.PANGOCAIRO_BACKEND = 'fontconfig';
 
 const express = require('express');
 const path = require('path');
-const { generateCard, templates } = require('./generator');
+const { generateCard, TEMPLATES } = require('./generator');
 
 const app = express();
 app.use(express.json());
@@ -15,7 +14,6 @@ app.use('/cards', express.static(path.join(__dirname, 'output')));
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
 
-// 이미지 메모리 캐시 (id → pngBuffer)
 const imageCache = new Map();
 
 // ═══ 카카오 스킬 응답 헬퍼 ═══
@@ -33,25 +31,72 @@ function quickReplies(text, replies) {
   };
 }
 
-const TEMPLATE_REPLIES = [
-  { label: '심플', message: '심플' },
-  { label: '모던', message: '모던' },
-  { label: '서클', message: '서클' },
-  { label: '더보기', message: '더보기' },
+// ═══ 업종 목록 ═══
+const INDUSTRY_REPLIES_1 = [
+  { label: 'IT/테크', message: '업종:IT/테크' },
+  { label: '디자인', message: '업종:디자인' },
+  { label: '금융/보험', message: '업종:금융/보험' },
+  { label: '교육', message: '업종:교육' },
+  { label: '요식업', message: '업종:요식업' },
+  { label: '더보기', message: '업종더보기' },
 ];
 
-const TEMPLATE_REPLIES2 = [
-  { label: '앵글', message: '앵글' },
-  { label: '카드', message: '카드' },
-  { label: '라인아트', message: '라인아트' },
+const INDUSTRY_REPLIES_2 = [
+  { label: '의료/건강', message: '업종:의료/건강' },
+  { label: '부동산', message: '업종:부동산' },
+  { label: '뷰티/패션', message: '업종:뷰티/패션' },
+  { label: '법률', message: '업종:법률' },
+  { label: '건설', message: '업종:건설' },
+  { label: '더보기2', message: '업종더보기2' },
 ];
 
+const INDUSTRY_REPLIES_3 = [
+  { label: '마케팅/광고', message: '업종:마케팅/광고' },
+  { label: '예술/문화', message: '업종:예술/문화' },
+  { label: '기타', message: '업종:기타' },
+  { label: '건너뛰기', message: '업종:건너뛰기' },
+];
+
+// ═══ 컬러 프리셋 ═══
+const COLOR_PRESETS = {
+  '블루':   { main: '#2563EB', sub: '#EFF6FF' },
+  '레드':   { main: '#DC2626', sub: '#FEF2F2' },
+  '그린':   { main: '#16A34A', sub: '#F0FDF4' },
+  '퍼플':   { main: '#7C3AED', sub: '#F5F3FF' },
+  '오렌지': { main: '#EA580C', sub: '#FFF7ED' },
+  '핑크':   { main: '#DB2777', sub: '#FDF2F8' },
+  '다크':   { main: '#00F5FF', sub: '#0D0D1A' },
+  '골드':   { main: '#BF953F', sub: '#0A0A0A' },
+  '블랙':   { main: '#111111', sub: '#FFFFFF' },
+  '네이비': { main: '#0F3460', sub: '#F5F5F5' },
+};
+
+const COLOR_REPLIES_1 = [
+  { label: '블루', message: '컬러:블루' },
+  { label: '레드', message: '컬러:레드' },
+  { label: '그린', message: '컬러:그린' },
+  { label: '퍼플', message: '컬러:퍼플' },
+  { label: '더보기', message: '컬러더보기' },
+];
+
+const COLOR_REPLIES_2 = [
+  { label: '오렌지', message: '컬러:오렌지' },
+  { label: '핑크', message: '컬러:핑크' },
+  { label: '다크', message: '컬러:다크' },
+  { label: '골드', message: '컬러:골드' },
+  { label: '블랙', message: '컬러:블랙' },
+  { label: '네이비', message: '컬러:네이비' },
+];
+
+// ═══ 템플릿 한글 매핑 ═══
 const TEMPLATE_MAP = {
   '심플': 'simple', '모던': 'modern', '서클': 'circle',
   '앵글': 'angle', '카드': 'card', '라인아트': 'line',
 };
+const TEMPLATE_NAME_KR = Object.fromEntries(Object.entries(TEMPLATE_MAP).map(([k, v]) => [v, k]));
 
 // ═══ 세션 ═══
+// step: init → input → industry → color → qr → template → done
 const sessions = new Map();
 function getSession(userId) {
   if (!sessions.has(userId)) sessions.set(userId, { step: 'init', data: {} });
@@ -73,6 +118,46 @@ function parseInput(text) {
   return null;
 }
 
+// 업종별 추천 — 배경 6종 중 3개 추천
+const INDUSTRY_RECOMMEND = {
+  'IT/테크': ['simple', 'modern', 'line'],
+  '디자인': ['circle', 'card', 'line'],
+  '금융/보험': ['simple', 'modern', 'angle'],
+  '교육': ['simple', 'card', 'angle'],
+  '요식업': ['circle', 'card', 'modern'],
+  '의료/건강': ['simple', 'modern', 'card'],
+  '부동산': ['modern', 'angle', 'simple'],
+  '뷰티/패션': ['circle', 'card', 'line'],
+  '법률': ['simple', 'modern', 'angle'],
+  '건설': ['modern', 'angle', 'simple'],
+  '마케팅/광고': ['circle', 'line', 'card'],
+  '예술/문화': ['circle', 'line', 'card'],
+  '기타': ['simple', 'modern', 'circle'],
+};
+
+function templateRepliesFromIndustry(industry) {
+  const recommended = INDUSTRY_RECOMMEND[industry] || INDUSTRY_RECOMMEND['기타'];
+  const replies = recommended.map(t => ({
+    label: `${TEMPLATE_NAME_KR[t]} (추천)`,
+    message: TEMPLATE_NAME_KR[t],
+  }));
+  replies.push({ label: '전체보기', message: '전체보기' });
+  return replies;
+}
+
+const ALL_TEMPLATE_REPLIES_1 = [
+  { label: '심플', message: '심플' },
+  { label: '모던', message: '모던' },
+  { label: '서클', message: '서클' },
+  { label: '더보기', message: '템플릿더보기' },
+];
+
+const ALL_TEMPLATE_REPLIES_2 = [
+  { label: '앵글', message: '앵글' },
+  { label: '카드', message: '카드' },
+  { label: '라인아트', message: '라인아트' },
+];
+
 // ═══ 스킬 엔드포인트 ═══
 app.post('/skill/start', (req, res) => {
   const userId = req.body.userRequest?.user?.id || 'unknown';
@@ -91,21 +176,7 @@ app.post('/skill/input', async (req, res) => {
   const session = getSession(userId);
 
   try {
-    // "디자인 변경" or "다른 디자인" 처리
-    if (utterance === '디자인 변경' || utterance === '다른 디자인') {
-      if (session.data.name) {
-        session.step = 'template';
-        return res.json(quickReplies('다른 디자인을 선택해주세요.', TEMPLATE_REPLIES));
-      }
-    }
-
-    // "더보기" — 나머지 템플릿 표시
-    if (utterance === '더보기') {
-      session.step = 'template';
-      return res.json(quickReplies('디자인을 선택해주세요.', TEMPLATE_REPLIES2));
-    }
-
-    // "명함 만들기" or "다시 만들기" 처리
+    // ─── 명함 만들기 / 다시 만들기 ───
     if (utterance === '명함 만들기' || utterance === '다시 만들기') {
       sessions.set(userId, { step: 'input', data: {} });
       return res.json(simpleText(
@@ -115,7 +186,107 @@ app.post('/skill/input', async (req, res) => {
       ));
     }
 
-    // 템플릿 선택 처리
+    // ─── 디자인 변경 ───
+    if ((utterance === '디자인 변경' || utterance === '다른 디자인') && session.data.name) {
+      session.step = 'template';
+      if (session.data.industry) {
+        return res.json(quickReplies('다른 디자인을 선택해주세요.', templateRepliesFromIndustry(session.data.industry)));
+      }
+      return res.json(quickReplies('디자인을 선택해주세요.', ALL_TEMPLATE_REPLIES_1));
+    }
+
+    // ─── 업종 선택 ───
+    if (utterance === '업종더보기') {
+      return res.json(quickReplies('업종을 선택해주세요.', INDUSTRY_REPLIES_2));
+    }
+    if (utterance === '업종더보기2') {
+      return res.json(quickReplies('업종을 선택해주세요.', INDUSTRY_REPLIES_3));
+    }
+    if (session.step === 'industry') {
+      // 퀵리플라이 선택 (업종:XX) 또는 직접 텍스트 입력 모두 처리
+      let industry = utterance.startsWith('업종:') ? utterance.replace('업종:', '') : utterance;
+      if (industry !== '건너뛰기') {
+        session.data.industry = industry;
+      }
+      session.step = 'color';
+      return res.json(quickReplies(
+        `${session.data.industry ? `업종: ${session.data.industry}\n\n` : ''}` +
+        '명함 컬러를 선택해주세요.\n메인컬러가 아이콘과 포인트 색상에 적용됩니다.',
+        COLOR_REPLIES_1
+      ));
+    }
+
+    // ─── 컬러 선택 ───
+    if (utterance === '컬러더보기') {
+      return res.json(quickReplies('컬러를 선택해주세요.', COLOR_REPLIES_2));
+    }
+    if (utterance.startsWith('컬러:') && session.step === 'color') {
+      const colorName = utterance.replace('컬러:', '');
+      const preset = COLOR_PRESETS[colorName];
+      if (preset) {
+        session.data.mainColor = preset.main;
+        session.data.subColor = preset.sub;
+      }
+      session.step = 'qr';
+      return res.json(quickReplies(
+        `컬러: ${colorName}\n\n` +
+        'QR코드를 명함에 넣으시겠어요?\n홈페이지, 인스타그램 등 URL을 입력하면 QR코드가 생성됩니다.',
+        [
+          { label: 'QR 넣기', message: 'QR입력' },
+          { label: '건너뛰기', message: 'QR건너뛰기' },
+        ]
+      ));
+    }
+
+    // ─── QR코드 입력 ───
+    if (utterance === 'QR입력' && session.step === 'qr') {
+      session.step = 'qr_url';
+      return res.json(simpleText(
+        'QR코드에 넣을 URL을 입력해주세요.\n\n' +
+        '예)\nhttps://instagram.com/myshop\nhttps://mycompany.com'
+      ));
+    }
+    if (utterance === 'QR건너뛰기' && session.step === 'qr') {
+      session.step = 'template';
+      if (session.data.industry) {
+        return res.json(quickReplies(
+          `${session.data.name} | ${session.data.title}\n업종별 추천 디자인입니다.`,
+          templateRepliesFromIndustry(session.data.industry)
+        ));
+      }
+      return res.json(quickReplies(
+        `${session.data.name} | ${session.data.title}\n디자인을 선택해주세요.`,
+        ALL_TEMPLATE_REPLIES_1
+      ));
+    }
+    if (session.step === 'qr_url') {
+      // URL 형태인지 간단 체크
+      if (utterance.startsWith('http://') || utterance.startsWith('https://')) {
+        session.data.qrUrl = utterance;
+        session.step = 'template';
+        if (session.data.industry) {
+          return res.json(quickReplies(
+            `QR코드 URL 등록 완료!\n\n${session.data.name} | ${session.data.title}\n업종별 추천 디자인입니다.`,
+            templateRepliesFromIndustry(session.data.industry)
+          ));
+        }
+        return res.json(quickReplies(
+          `QR코드 URL 등록 완료!\n\n${session.data.name} | ${session.data.title}\n디자인을 선택해주세요.`,
+          ALL_TEMPLATE_REPLIES_1
+        ));
+      }
+      return res.json(simpleText('URL 형식이 아닙니다. http:// 또는 https://로 시작하는 주소를 입력해주세요.'));
+    }
+
+    // ─── 전체보기 / 템플릿 더보기 ───
+    if (utterance === '전체보기' || utterance === '템플릿더보기') {
+      if (utterance === '전체보기') {
+        return res.json(quickReplies('전체 디자인 목록입니다.', ALL_TEMPLATE_REPLIES_1));
+      }
+      return res.json(quickReplies('디자인을 선택해주세요.', ALL_TEMPLATE_REPLIES_2));
+    }
+
+    // ─── 템플릿 선택 → 명함 생성 ───
     if (session.step === 'template' && TEMPLATE_MAP[utterance]) {
       const templateName = TEMPLATE_MAP[utterance];
       const { pngBuffer } = await generateCard(session.data, templateName);
@@ -124,13 +295,19 @@ app.post('/skill/input', async (req, res) => {
       session.step = 'done';
       const imgUrl = `${BASE_URL}/image/${imgId}`;
 
+      const desc = [
+        `${session.data.company} | ${session.data.title}`,
+        session.data.industry ? `업종: ${session.data.industry}` : '',
+        session.data.qrUrl ? 'QR코드 포함' : '',
+      ].filter(Boolean).join('\n');
+
       return res.json({
         version: '2.0',
         template: {
           outputs: [{
             basicCard: {
               title: `${session.data.name}의 명함 — ${utterance}`,
-              description: `${session.data.company} | ${session.data.title}`,
+              description: desc,
               thumbnail: { imageUrl: imgUrl },
               buttons: [
                 { label: '이미지 저장', action: 'webLink', webLinkUrl: `${BASE_URL}/download/${imgId}` },
@@ -143,18 +320,18 @@ app.post('/skill/input', async (req, res) => {
       });
     }
 
-    // 한 줄 입력 파싱
+    // ─── 한 줄 입력 파싱 ───
     const parsed = parseInput(utterance);
     if (parsed) {
-      session.data = parsed;
-      session.step = 'template';
+      session.data = { ...session.data, ...parsed };
+      session.step = 'industry';
       return res.json(quickReplies(
-        `${parsed.name} | ${parsed.title}\n디자인을 선택해주세요.`,
-        TEMPLATE_REPLIES
+        `${parsed.name} | ${parsed.title} | ${parsed.company}\n\n업종을 선택하거나 직접 입력해주세요.\n업종에 맞는 디자인을 추천해드립니다.`,
+        INDUSTRY_REPLIES_1
       ));
     }
 
-    // 형식이 안 맞으면 안내
+    // ─── 형식 안내 ───
     return res.json(simpleText(
       '이름/직함/회사/연락처/이메일\n예) 홍길동/CEO/회사/010-0000-0000/a@b.com'
     ));
@@ -170,9 +347,9 @@ app.post('/skill/help', (req, res) => {
     '사용법\n\n' +
     '1. 정보를 슬래시(/)로 구분해서 입력\n' +
     '   이름 / 직함 / 회사 / 연락처 / 이메일\n\n' +
-    '2. 8종 디자인 중 선택\n' +
-    '3. 명함 이미지 생성 & 저장!\n' +
-    '4. "다른 디자인"으로 같은 정보로 다른 템플릿 적용\n\n' +
+    '2. 업종 선택 → 컬러 선택 → QR코드(선택)\n' +
+    '3. 추천 디자인 중 선택\n' +
+    '4. 명함 이미지 생성 & 저장!\n\n' +
     '무료로 무제한 생성 가능합니다.'
   ));
 });
@@ -220,7 +397,6 @@ app.get('/', (req, res) => {
     .input-area input { flex:1; border:none; padding:15px; font-size:13.5px; outline:none; }
     .input-area button { background:#FEE500; border:none; padding:15px 22px; font-weight:bold; cursor:pointer; font-size:14px; }
 
-    /* 우측 빠른 입력 폼 */
     .form-panel { width:320px; background:#fff; border-radius:20px; box-shadow:0 8px 40px rgba(0,0,0,0.3); overflow:hidden; }
     .form-panel .fheader { background:linear-gradient(135deg,#0F3460,#16537E); color:#fff; padding:18px 20px; font-weight:bold; }
     .form-panel .fheader small { display:block; font-size:11px; opacity:0.6; margin-top:2px; font-weight:normal; }
@@ -234,7 +410,6 @@ app.get('/', (req, res) => {
   </style>
 </head>
 <body>
-  <!-- 좌측: 챗봇 -->
   <div class="chat">
     <div class="header">
       명함 만들기 챗봇
@@ -248,7 +423,6 @@ app.get('/', (req, res) => {
     </div>
   </div>
 
-  <!-- 우측: 빠른 입력 폼 -->
   <div class="form-panel">
     <div class="fheader">
       빠른 입력
@@ -350,7 +524,6 @@ app.get('/', (req, res) => {
       if (tmpl.quickReplies) setQuickReplies(tmpl.quickReplies);
     }
 
-    // 초기 시작
     fetch('/skill/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -361,15 +534,23 @@ app.get('/', (req, res) => {
 </html>`);
 });
 
+// ═══ 헬스체크 ═══
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`\n  명함 챗봇 서버: http://localhost:${PORT}`);
   console.log(`  카카오 스킬 URL: http://localhost:${PORT}/skill/input\n`);
 
-  // Render 무료 플랜 슬립 방지 — 10분마다 self-ping
+  // Render 무료 플랜 슬립 방지 — 13분마다 self-ping
   if (process.env.BASE_URL) {
-    setInterval(() => {
-      fetch(process.env.BASE_URL).catch(() => {});
-    }, 10 * 60 * 1000);
+    const ping = () => fetch(`${process.env.BASE_URL}/health`).catch(() => {});
+    ping();
+    setInterval(ping, 13 * 60 * 1000);
+    console.log('  keep-alive ping 활성화됨\n');
+  } else {
+    console.log('  ⚠ BASE_URL 미설정 — keep-alive 비활성\n');
   }
 });
