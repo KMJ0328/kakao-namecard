@@ -34,23 +34,21 @@ function quickReplies(text, replies) {
 }
 
 const TEMPLATE_REPLIES = [
-  { label: '미니멀', message: '미니멀' },
-  { label: '다크', message: '다크' },
-  { label: '럭셔리', message: '럭셔리' },
+  { label: '심플', message: '심플' },
+  { label: '모던', message: '모던' },
+  { label: '서클', message: '서클' },
   { label: '더보기', message: '더보기' },
 ];
 
 const TEMPLATE_REPLIES2 = [
-  { label: '코퍼레이트', message: '코퍼레이트' },
-  { label: '크리에이티브', message: '크리에이티브' },
-  { label: '선셋', message: '선셋' },
-  { label: '모노', message: '모노' },
-  { label: '네이처', message: '네이처' },
+  { label: '앵글', message: '앵글' },
+  { label: '카드', message: '카드' },
+  { label: '라인아트', message: '라인아트' },
 ];
 
 const TEMPLATE_MAP = {
-  '미니멀': 'minimal', '코퍼레이트': 'corporate', '크리에이티브': 'creative',
-  '다크': 'dark', '선셋': 'sunset', '모노': 'mono', '네이처': 'nature', '럭셔리': 'luxury',
+  '심플': 'simple', '모던': 'modern', '서클': 'circle',
+  '앵글': 'angle', '카드': 'card', '라인아트': 'line',
 };
 
 // ═══ 세션 ═══
