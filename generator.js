@@ -22,13 +22,13 @@ async function qr(url, x, y, size) {
   } catch { return ''; }
 }
 
-// 아이콘 (전화, 이메일, 웹, 위치)
+// SVG 아이콘
 function icon(type, x, y, color = '#333') {
   const icons = {
-    phone: `<text x="${x}" y="${y}" font-size="18" fill="${color}">📞</text>`,
-    email: `<text x="${x}" y="${y}" font-size="18" fill="${color}">✉️</text>`,
-    web:   `<text x="${x}" y="${y}" font-size="18" fill="${color}">🌐</text>`,
-    loc:   `<text x="${x}" y="${y}" font-size="18" fill="${color}">📍</text>`,
+    phone: `<g transform="translate(${x},${y-14})"><path d="M6.6 10.8c1.4 1.4 3 2.6 4.8 3.4l1.6-1.6c.2-.2.5-.3.7-.2 1 .3 2 .5 3 .5.4 0 .7.3.7.7V17c0 .4-.3.7-.7.7C8.5 17.7 2.3 11.5 2.3 4c0-.4.3-.7.7-.7h3.4c.4 0 .7.3.7.7 0 1 .2 2 .5 3 .1.3 0 .5-.2.7L6.6 10.8z" fill="${color}" transform="scale(0.9)"/></g>`,
+    email: `<g transform="translate(${x},${y-14})"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="${color}" transform="scale(0.8)"/></g>`,
+    web:   `<g transform="translate(${x},${y-14})"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 17.9c-3.9-.5-7-3.9-7-7.9 0-.6.1-1.2.2-1.8L9 15v1c0 1.1.9 2 2 2v1.9zm6.9-2.5c-.3-.8-1-1.4-1.9-1.4h-1v-3c0-.6-.4-1-1-1H8v-2h2c.6 0 1-.4 1-1V7h2c1.1 0 2-.9 2-2v-.4c2.9 1.2 5 4.1 5 7.4 0 2.1-.8 4-2.1 5.4z" fill="${color}" transform="scale(0.8)"/></g>`,
+    loc:   `<g transform="translate(${x},${y-14})"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z" fill="${color}" transform="scale(0.8)"/></g>`,
   };
   return icons[type] || '';
 }
@@ -57,84 +57,84 @@ const backLayouts = {
 
   // 1. 심플: 이름+직함 좌상단, BRAND 우상단, QR 좌하단, 연락처 우하단(아이콘)
   async simple(d) {
-    const mc = d.mainColor || '#111';
+    const ac = d.mainColor || '#333';
     const q = await qr(d.qrUrl, 70, 340, 160);
     return `<svg width="1044" height="590" xmlns="http://www.w3.org/2000/svg">
-      <text x="80" y="110" font-family="${F}" font-size="44" font-weight="bold" fill="${mc}" letter-spacing="8">${esc(d.name)}</text>
+      <text x="80" y="110" font-family="${F}" font-size="44" font-weight="bold" fill="#111" letter-spacing="8">${esc(d.name)}</text>
       <text x="380" y="105" font-family="${F}" font-size="20" fill="#666">${esc(d.title)}</text>
-      <text x="750" y="90" font-family="${F}" font-size="28" font-weight="bold" fill="#111" text-anchor="start">${esc(d.company)}</text>
-      ${icon('phone', 600, 310, mc)} <text x="640" y="310" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
-      ${icon('email', 600, 355, mc)} <text x="640" y="355" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
+      <text x="964" y="90" font-family="${F}" font-size="32" font-weight="bold" fill="#111" text-anchor="end">${esc(d.company)}</text>
+      ${icon('phone', 600, 310, ac)} <text x="640" y="310" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
+      ${icon('email', 600, 355, ac)} <text x="640" y="355" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
       ${q}
     </svg>`;
   },
 
   // 2. 모던: QR 좌측 대형, 직함+이름 우상단, 연락처 우측, 아이콘 맨우측
   async modern(d) {
-    const mc = d.mainColor || '#111';
+    const ac = d.mainColor || '#333';
     const q = await qr(d.qrUrl, 70, 100, 220);
     return `<svg width="1044" height="590" xmlns="http://www.w3.org/2000/svg">
       ${q}
       <text x="560" y="110" font-family="${F}" font-size="18" fill="#666">${esc(d.title)}</text>
-      <text x="620" y="160" font-family="${F}" font-size="44" font-weight="bold" fill="${mc}" letter-spacing="8">${esc(d.name)}</text>
-      <text x="620" y="300" font-family="${F}" font-size="18" fill="#333" text-anchor="start">${esc(d.phone)}</text>
-      <text x="620" y="340" font-family="${F}" font-size="18" fill="#333" text-anchor="start">${esc(d.email)}</text>
-      <text x="620" y="380" font-family="${F}" font-size="16" fill="#333" text-anchor="start">${esc(d.company)}</text>
+      <text x="620" y="160" font-family="${F}" font-size="44" font-weight="bold" fill="#111" letter-spacing="8">${esc(d.name)}</text>
+      ${icon('phone', 620, 300, ac)} <text x="660" y="300" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
+      ${icon('email', 620, 345, ac)} <text x="660" y="345" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
+      <text x="620" y="400" font-family="${F}" font-size="16" fill="#333" font-weight="bold">${esc(d.company)}</text>
     </svg>`;
   },
 
-  // 3. 서클: 이름+직함 좌상단, 연락처 좌하단(아이콘), QR 우상단
+  // 3. 서클: 이름+직함 좌상단, 연락처 좌하단(아이콘), QR 우상단, BRAND 우상단
   async circle(d) {
-    const mc = d.mainColor || '#111';
+    const ac = d.mainColor || '#333';
     const q = await qr(d.qrUrl, 780, 100, 180);
     return `<svg width="1044" height="590" xmlns="http://www.w3.org/2000/svg">
-      <text x="80" y="120" font-family="${F}" font-size="44" font-weight="bold" fill="${mc}" letter-spacing="8">${esc(d.name)}</text>
+      <text x="80" y="120" font-family="${F}" font-size="44" font-weight="bold" fill="#111" letter-spacing="8">${esc(d.name)}</text>
       <text x="380" y="115" font-family="${F}" font-size="20" fill="#666">${esc(d.title)}</text>
-      <text x="750" y="80" font-family="${F}" font-size="24" font-weight="bold" fill="#111">${esc(d.company)}</text>
-      ${icon('phone', 80, 310, mc)} <text x="120" y="310" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
-      ${icon('email', 80, 355, mc)} <text x="120" y="355" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
+      <text x="964" y="80" font-family="${F}" font-size="28" font-weight="bold" fill="#111" text-anchor="end">${esc(d.company)}</text>
+      ${icon('phone', 80, 310, ac)} <text x="120" y="310" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
+      ${icon('email', 80, 355, ac)} <text x="120" y="355" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
       ${q}
     </svg>`;
   },
 
   // 4. 앵글: QR 좌상단, 이름+직함 우상단, 연락처 우측(아이콘), BRAND 좌하단
   async angle(d) {
-    const mc = d.mainColor || '#111';
+    const ac = d.mainColor || '#333';
     const q = await qr(d.qrUrl, 70, 80, 180);
     return `<svg width="1044" height="590" xmlns="http://www.w3.org/2000/svg">
       ${q}
-      <text x="560" y="130" font-family="${F}" font-size="44" font-weight="bold" fill="${mc}" letter-spacing="8">${esc(d.name)}</text>
+      <text x="560" y="130" font-family="${F}" font-size="44" font-weight="bold" fill="#111" letter-spacing="8">${esc(d.name)}</text>
       <text x="860" y="125" font-family="${F}" font-size="20" fill="#666">${esc(d.title)}</text>
-      ${icon('phone', 560, 280, mc)} <text x="600" y="280" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
-      ${icon('email', 560, 325, mc)} <text x="600" y="325" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
+      ${icon('phone', 560, 280, ac)} <text x="600" y="280" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
+      ${icon('email', 560, 325, ac)} <text x="600" y="325" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
       <text x="80" y="500" font-family="${F}" font-size="24" font-weight="bold" fill="#FFF">${esc(d.company)}</text>
     </svg>`;
   },
 
   // 5. 카드: BRAND+직함+이름 상단(다크영역), QR 좌하단, 연락처 우하단(아이콘)
   async card(d) {
-    const mc = d.mainColor || '#FFF';
+    const ac = d.mainColor || '#333';
     const q = await qr(d.qrUrl, 160, 340, 160);
     return `<svg width="1044" height="590" xmlns="http://www.w3.org/2000/svg">
       <text x="120" y="160" font-family="${F}" font-size="28" font-weight="bold" fill="#FFF" letter-spacing="2">${esc(d.company)}</text>
       <text x="470" y="155" font-family="${F}" font-size="16" fill="rgba(255,255,255,0.6)">${esc(d.title)}</text>
       <text x="560" y="160" font-family="${F}" font-size="44" font-weight="bold" fill="#FFF" letter-spacing="8">${esc(d.name)}</text>
-      ${icon('phone', 560, 380, '#333')} <text x="600" y="380" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
-      ${icon('email', 560, 425, '#333')} <text x="600" y="425" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
+      ${icon('phone', 560, 380, ac)} <text x="600" y="380" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
+      ${icon('email', 560, 425, ac)} <text x="600" y="425" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
       ${q}
     </svg>`;
   },
 
   // 6. 라인아트: BRAND 우상단, 이름+직함 좌측, 연락처 좌측(아이콘), QR 우하단
   async line(d) {
-    const mc = d.mainColor || '#111';
+    const ac = d.mainColor || '#333';
     const q = await qr(d.qrUrl, 790, 310, 160);
     return `<svg width="1044" height="590" xmlns="http://www.w3.org/2000/svg">
-      <text x="900" y="90" font-family="${F}" font-size="28" font-weight="bold" fill="#111" text-anchor="end">${esc(d.company)}</text>
-      <text x="80" y="220" font-family="${F}" font-size="44" font-weight="bold" fill="${mc}" letter-spacing="8">${esc(d.name)}</text>
+      <text x="964" y="90" font-family="${F}" font-size="32" font-weight="bold" fill="#111" text-anchor="end">${esc(d.company)}</text>
+      <text x="80" y="220" font-family="${F}" font-size="44" font-weight="bold" fill="#111" letter-spacing="8">${esc(d.name)}</text>
       <text x="380" y="215" font-family="${F}" font-size="20" fill="#666">${esc(d.title)}</text>
-      ${icon('phone', 80, 340, mc)} <text x="120" y="340" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
-      ${icon('email', 80, 385, mc)} <text x="120" y="385" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
+      ${icon('phone', 80, 340, ac)} <text x="120" y="340" font-family="${F}" font-size="18" fill="#333">${esc(d.phone)}</text>
+      ${icon('email', 80, 385, ac)} <text x="120" y="385" font-family="${F}" font-size="18" fill="#333">${esc(d.email)}</text>
       ${q}
     </svg>`;
   },
